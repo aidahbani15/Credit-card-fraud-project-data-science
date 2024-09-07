@@ -4,7 +4,7 @@
 ![fraud pic](https://github.com/user-attachments/assets/7cbc74b6-111e-4e46-a335-0011af95ba98)
 
 
-AUTHOR: @aidahbaaniwanjirunjenga@gmail.com
+AUTHOR: @aidahbaniwanjirunjenga@gmail.com
 # Credit Card Fraud Detection System
 
 Credit card fraud is a major problem that affects both consumers and financial institutions. It involves unauthorized use of credit card information to make transactions, resulting in financial loss and compromised personal data. As the number of digital transactions increases, so does the risk of fraud. Traditional methods of fraud detection, such as rule-based systems, are often ineffective in catching complex fraud patterns, leading to missed detections or false alarms.
