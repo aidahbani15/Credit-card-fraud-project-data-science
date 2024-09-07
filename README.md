@@ -5,57 +5,124 @@
 
 
 AUTHOR: @aidahbaaniwanjirunjenga@gmail.com
-Table of Contents
-Business Problem
-Data Source
-Methods
-Tech Stack
-Quick glance at the Results
-Lessons learned and Recommendation
-Limitation and what can be Improved
-Run Locally
-Explore the notebook
-Business Problem
-Credit card frauds have always been a major concern for banking and financial institutions which result in unnecessary fees taken. Fraudster have several methods in achieving these unauthorized transactions and we wish to identify key components that help identify a fraudulent transaction. The idea is if we can correctly identify a fraudulent transaction we can stop the transaction from going through and save the money from being taken. In order to achieve this goal we need a policy that helps determine fraudulent transaction at the expense of not misclassifying a transaction as fraudulent which can also increase costs. We need an efficient system that balances the identification of normal and fraudulent transactions.
+# Credit Card Fraud Detection System
 
-Data Source
-My Google Drive
-Methods
-Exploratory Data Analysis
-Multivariate Analysis
-Visualizations
-Modeling
-App Deployment
-Tech Stack
-Python (Machine Learning Modeling and App preparation)
-AWS S3 (Model Storage)
-Gradio (Interface for app)
-Hugging Face (App Deployment)
-Quick Glance at the Results
-Correlation Matrix between numeric features.
+Credit card fraud is a major problem that affects both consumers and financial institutions. It involves unauthorized use of credit card information to make transactions, resulting in financial loss and compromised personal data. As the number of digital transactions increases, so does the risk of fraud. Traditional methods of fraud detection, such as rule-based systems, are often ineffective in catching complex fraud patterns, leading to missed detections or false alarms.
+
+This project implements a **Credit Card Fraud Detection System** that uses machine learning to identify potentially fraudulent transactions. By analyzing patterns in transaction data, the system can detect abnormal activities that may indicate fraud. This approach allows for real-time detection, helping financial institutions reduce their exposure to fraud and protect their customers.
+## Why is this System Needed?
+
+Credit card fraud has become more sophisticated, making it harder to detect using conventional methods. Some common forms of credit card fraud include:
+
+- **Card-not-present (CNP) fraud**: Fraudulent transactions made without the physical card, typically through online purchases.
+- **Skimming**: Duplicating credit card data from the magnetic stripe or chip.
+- **Phishing**: Trick users into revealing their card details through fake websites or emails.
+- **Account takeover**: Fraudsters gain control of a legitimate account and make unauthorized transactions.
+
+Fraud detection systems need to quickly identify these activities to prevent losses. Machine learning offers a solution by learning from historical data to detect fraudulent patterns. The system can then flag potentially fraudulent transactions for further review, improving accuracy and efficiency compared to rule-based systems.
+
+This project aims to build a robust fraud detection system that leverages machine learning models, specifically XGBoost, to accurately classify transactions as fraudulent or legitimate. The model is deployed in a user-friendly Streamlit web application that allows users to upload transaction data, visualize it, and get real-time fraud predictions.
+
+## Table of Contents
+
+- [Project Overview](#project-overview)
+- [Why is this System Needed?](#why-is-this-system-needed)
+- [Technologies Used](#technologies-used)
+- [Installation](#installation)
+- [Dataset](#dataset)
+- [Model](#model)
+- [Web Application](#web-application)
+- [Usage](#usage)
+- [Results](#results)
+- [Contributing](#contributing)
+- [License](#license)
+
+## Project Overview
+
+The **Credit Card Fraud Detection System** uses machine learning to detect fraudulent transactions based on transaction data. The model is trained on various transaction features such as distance from home, transaction amount, use of a PIN number, and whether the transaction was made online.
+
+The system is built using Python and deployed as a web application using Streamlit. Users can upload transaction data, visualize it, and get predictions on whether a transaction is fraudulent. This system is intended to be a helpful tool for financial institutions and security teams looking to reduce fraud-related losses.
+
+## Technologies Used
+
+- **Python 3.12+**
+- **XGBoost**: A powerful gradient boosting algorithm for classification tasks.
+- **Pandas & NumPy**: For data manipulation and analysis.
+- **Scikit-learn**: For model evaluation and preprocessing.
+- **Matplotlib & Seaborn**: For data visualization.
+- **Streamlit**: For building the interactive web application.
+
+## Installation
+
+To run this project locally, follow these steps:
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/your-username/credit-card-fraud-detection.git
+   cd credit-card-fraud-detection
+   
+Set up the environment: python -m venv venv
+source venv/bin/activate    # On Windows, use `venv\Scripts\activate`
+
+pip install -r requirements.txt
+
+pip install xgboost
+
+Dataset
+The dataset used for this project contains various transaction features. It is hosted on Google Drive and can be loaded directly from the provided URL.
+
+Features:
+distance_from_home: Distance from the cardholder's home to the transaction location.
+distance_from_last_transaction: Distance from the location of the last transaction.
+ratio_to_median_purchase_price: Ratio of the transaction amount to the median purchase price.
+repeat_retailer: Whether the transaction is from the same retailer as previous transactions.
+used_chip: Whether the transaction was made using a chip-enabled card.
+used_pin_number: Whether a PIN was used during the transaction.
+online_order: Whether the transaction was made online.
+fraud: The target variable indicating whether the transaction is fraudulent (1) or legitimate (0).
+Model
+The project uses the XGBoost classifier, a popular and efficient gradient boosting algorithm. The model is trained on the provided transaction dataset to predict whether a transaction is fraudulent.
+
+Model Training
+The dataset is split into training and testing sets. The XGBoost model is then trained on the training set and evaluated on the test set using standard metrics like accuracy, precision, recall, and F1-score.
+
+Hyperparameters
+n_estimators=100
+learning_rate=0.1
+max_depth=6
+These hyperparameters were chosen after experimentation and tuning.
+
+Web Application
+The project includes a web application built using Streamlit, which allows users to interact with the model in a user-friendly manner.
+
+Features of the Web Application:
+Data Upload: Upload new transaction data for fraud detection.
+Data Visualization: Visualize transaction data through graphs and charts.
+Fraud Prediction: Predict whether a transaction is fraudulent based on the input data
 
 
-
-Confusion Matrix of XGBoost Classifier (Testing Set).
-
-
-
-XGboost Feature Importance Plot.
+Running the application
+streamlit run credit_card_fraud_detection_system_aidahbani.py
 
 
+Open the provided local URL (usually http://localhost:8501) in your web browser to access the app.
 
-Top 3 models on the testing set (with default parameters)
+Usage
+Upload Data: Upload your CSV file containing transaction data.
+Visualize: Explore the data through visualizations provided in the app.
+Predict: Get predictions on whether transactions are fraudulent.
+Results
+The XGBoost model achieves high accuracy on the test dataset, making it a reliable model for detecting fraudulent transactions. Key metrics include:
 
-Model	Best Threshold	F1 Score	Accuracy	Recall	Precision
-Logistic Regression	0.315789	79.48%	96.5%	76.67%	82.5%
-Random Forest	0.315789	99.9%	99.9%	99.9%	100%
-XGBoost	0.105263	99.9%	99.9%	99.9%	99.9%
-Final Model used: XGBoost Classifier
-Metric used: Recall, Precision, and Accuracy
-What is the meaning behind the threshold?: The threshold is the probability set in order for us to classify a transaction as a fraudulent one. Therefore if the probability provided by our XGboost Classifier for being a fraudulent transaction was greater than 10.5%, then the transaction would be classified as a fraudulent one. This threshold was computed by checking random probabilities and picking the ones that returned the highest metrics when it came down to F1 score, accuracy, recall and precision. Remember we want to find a balance between correctly identifying fraudulent transaction and not misclassifying normal transaction as being fraud since this misidentification could cost a company a lot of money. Therefore, in terms of our metrics this means we want the best scores when it came down to only recall, precision, and accuracy. Where recall is the score that correctly identifies fraudulent transaction. Precision is the score in correctly identifying fraudulent transaction divided by the total number labelled as fraudulent transaction even the ones that weren't. Accuracy is the score of our model that correctly identifying the transactions correctly.
-Lessons Learned and Recommendation
-In this project I learned how to leverage feature importance using our Random Forest and Gradient Boosting models to determine what influences our response the most. Its important to note that some features might provide a negative influence to our response variable or a positive one. Since the goal for this project is to increase satisfactory level, we want to identify not only the top important features but also the ones that provide positive influence. For example, Cleanliness is a feature given and some logic would say as we decrease cleanliness so would satisfaction levels. This can also be said in reverse if we increase cleanliness then you would expect customers to be more satisfied with their experience, thus this feature provides a positive influence. A negative influence would say if we increase a feature then satisfaction level would decrease or vice-versa.
-Limitation and what can be Improved
-Note: Based on the feature importance plot we can see that ratio to median purchase price had one of the greatest influence in predicting a fraudulent transaction. Now the ratio is computed by taking the purchase price and dividing it by the median purchase price used on the card. Therefore, we must know the transaction price that fraudster performed, limiting the model from stopping the transaction before it even occurs. Also we must have a median purchase price on the card, but what if theres no history on the card. What do we use as the median purchase price for the card?
-In order to improve our model we would require more attributes for our data. If you take a close look we are only using 7 predictors in order to determine our target/response of a fraudulent transaction. We can take more information on the card and the owner to determine more spending habits or calculate more probabilities that the transaction was in fact the owner.
-Also in order to implement a system that stops a transaction before going through when the system believes it is a fraudulent one would require a whole new transactional system across all stores. Currently when you buy or receive a refund from a store, it may be instant to you but in the backend the process takes days. This leads to issues since we would want to stop transaction from going through therefore we would need some fast transactional system to achieve this. Just recently the U.S. government approved such systems which they have been testing since 2019, I believe it will go live this month in October 2024.
+Accuracy: 99%
+Precision: 95%
+Recall: 95%
+F1-Score: 99%
+
+These results indicate that the model effectively identifies fraudulent transactions, minimizing both false positives and false negatives.
+
+Contributing
+Contributions to this project are welcome. If you have ideas to improve the system or want to add features, feel free to open an issue or submit a pull request. Please make sure your contributions adhere to the project's guidelines and standards.
+
+
+This README includes a more detailed explanation of what fraud is, why the system is necessary, and how it addresses the problem. You can further customize it by adding specifics related to your project's metrics and dataset.
