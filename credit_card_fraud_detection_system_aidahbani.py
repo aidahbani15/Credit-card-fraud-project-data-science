@@ -7,7 +7,6 @@ import seaborn as sns
 
 # credit card fraud detection system
 
-    obs = preprocess(obs)
     result = np.where((boost.predict_proba(obs)[:, 1] >= 0.105263),1,0)
     if (result == 1):
         return "This is a fraudulent purchase!"
