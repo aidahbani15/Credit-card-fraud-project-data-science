@@ -2,77 +2,69 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-import seaborn as sns
-# %matplotlib inline
+from dotenv import load_dotenv
+import tempfile
+import os 
+import boto3 
+# from pathlib import Path
 
 
+# load our models 
+load_dotenv()
+client = boto3.client('s3', aws_access_key_id = os.getenv('aws_access_key'),aws_secret_access_key=os.getenv('aws_secret_key'))
+bucket_name = "credit-card-fraud-app"
+key = "boost.sav"
 
-# credit card fraud detection system
+with tempfile.TemporaryFile() as fp:
+    client.download_fileobj(Fileobj=fp, Bucket=bucket_name, Key=key)
+    fp.seek(0)
+    boost = pickle.load(fp)
 
-def fraud_prediction(obs):
-    obs = preprocess(obs)
-    result = np.where((boost.predict_proba(obs)[:, 1] >= 0.105263),1,0)
-    if (result == 1):
-        return "This is a fraudulent purchase!"
-    else:
-        return "This transaction is verified"
+# boost_path = Path(__file__).parents[0] / "Models/boost.sav"
+# boost = pickle.load(open(boost_path,"rb"))
 
-# check the results
-fraud_prediction
+# functions
 
-# import shap library
-import shap
+# preprocessing data function
+def preprocess(data):
+    columns = ['distance_from_home', 'distance_from_last_transaction',
+                'ratio_to_median_purchase_price', 'repeat_retailer', 'used_chip',
+                'used_pin_number', 'online_order']
+    
+    df = pd.DataFrame([data], columns = columns)
+    
+    # convert data type
+    df[['repeat_retailer','used_chip','used_pin_number','online_order']] = df[['repeat_retailer','used_chip','used_pin_number','online_order']].astype('int')
+    
+    return df
 
 
-# shap values for an example observation
-# this cell is to prepare a shap importance plot for our web app
-plt.style.use("fivethirtyeight")
-
-explainer = shap.TreeExplainer(boost)
-shap_values = explainer.shap_values(example)
-scores_desc = list(zip(shap_values[0], example.columns))
-scores_desc = sorted(scores_desc)
-fig_m = plt.figure(tight_layout=True)
-plt.barh([s[1] for s in scores_desc], [s[0] for s in scores_desc])
-plt.title("Feature Shap Values")
-plt.ylabel("Shap Value")
-plt.xlabel("Feature Importance")
-plt.tight_layout()
-
+# Prediction function with probabilities
 def predict(*data):
-      columns = ['distance_from_home', 'distance_from_last_transaction',
-            'ratio_to_median_purchase_price', 'repeat_retailer', 'used_chip',
-            'used_pin_number', 'online_order']
-      df = pd.DataFrame([data], columns = columns)
-      df = preprocess(df)
-      prob_pred = boost.predict_proba(df)
-      return {"Normal": float(prob_pred[0][0]), "Fraud": float(prob_pred[0][1])}
+        df = preprocess(data)
+        prob_pred = boost.predict_proba(df)
+        return {"Normal": float(prob_pred[0][0]), "Fraud": float(prob_pred[0][1])}
 
+# plot function
 def interpret(*data):
-
-      plt.style.use("fivethirtyeight")
-
-      columns = ['distance_from_home', 'distance_from_last_transaction',
-            'ratio_to_median_purchase_price', 'repeat_retailer', 'used_chip',
-            'used_pin_number', 'online_order']
-      df = pd.DataFrame([data], columns = columns)
-
-      explainer = shap.TreeExplainer(boost)
-      shap_values = explainer.shap_values(df)
-      scores_desc = list(zip(shap_values[0], df.columns))
-      scores_desc = sorted(scores_desc)
-      fig_m = plt.figure(tight_layout=True)
-      plt.barh([s[1] for s in scores_desc], [s[0] for s in scores_desc])
-      plt.title("Feature Shap Values")
-      plt.ylabel("Shap Value")
-      plt.xlabel("Feature Importance")
-      plt.tight_layout()
-      return fig_m
-
-"""**Conclusion**:
-The XGBoost Classifier algorithm returned an accuracy score on both the training and testing data of above 99.99%. The accuracy score recieved was the mean of a 5-fold stratified cross validation on both data sets. Therefore, we can conclude that the model was not over fitting or being biased by the data it was trained on. This makes the credit card fraud detection system a pretty accurate detector for fraudulent transactions
-"""
-
+        plt.style.use("fivethirtyeight")
+        
+        df = preprocess(data)
+        
+        explainer = shap.TreeExplainer(boost)
+        shap_values = explainer.shap_values(df)
+        scores_desc = list(zip(shap_values[0], df.columns))
+        scores_desc = sorted(scores_desc)
+        fig_m = plt.figure(tight_layout=True)
+        plt.barh([s[1] for s in scores_desc], [s[0] for s in scores_desc])
+        plt.title("Feature Shap Values")
+        plt.ylabel("Shap Value")
+        plt.xlabel("Feature Importance")
+        plt.tight_layout()
+        
+        return fig_m
+    
+    
 import streamlit as st
 
 st.title("Credit Card Fraud Prediction System")
@@ -124,6 +116,6 @@ if interpret_btn:
 
 """
 
-example.T
+
 
 real_card.loc[real_card.index == 13].T
