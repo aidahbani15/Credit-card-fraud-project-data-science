@@ -7,10 +7,6 @@ import seaborn as sns
 
 # credit card fraud detection system
 
-# check the results
-fraud_prediction
-
-
 # import shap library
 import shap
 
