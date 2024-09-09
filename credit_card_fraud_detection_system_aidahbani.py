@@ -1,4 +1,3 @@
-
 # import essential libraries
 import pandas as pd
 import numpy as np
@@ -108,7 +107,3 @@ if interpret_btn:
 """Running on Url http://localhost:8501
 
 """
-
-
-
-real_card.loc[real_card.index == 13].T
