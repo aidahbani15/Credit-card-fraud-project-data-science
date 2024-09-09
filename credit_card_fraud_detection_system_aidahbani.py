@@ -5,11 +5,8 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 # %matplotlib inline
 
-
-
 # credit card fraud detection system
 
-def fraud_prediction(obs):
     obs = preprocess(obs)
     result = np.where((boost.predict_proba(obs)[:, 1] >= 0.105263),1,0)
     if (result == 1):
