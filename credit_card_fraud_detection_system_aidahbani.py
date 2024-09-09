@@ -19,7 +19,7 @@ def fraud_prediction(obs):
         return "This transaction is verified"
 
 # check the results
-fraud_prediction(example)
+fraud_prediction
 
 
 # import shap library
